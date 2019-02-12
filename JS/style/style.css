@@ -1,0 +1,13 @@
+.w3-col{
+    padding: 20px;
+}
+span{
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+.w3-badge{
+    background-color:grey;
+}
+
+
