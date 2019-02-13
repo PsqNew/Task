@@ -21,7 +21,7 @@ function data_Input_Check(check){
     return check >= 0 && check <= 20 && check !== "" && (check ^ 0) === check;
 }
 discs.addEventListener("click", function (event) {
-    let target = event.target;
+    var target = event.target;
     if (target.parentElement.className !== 'w3-margin') return;
     sum_Left += parseInt(target.innerHTML);
     add_To_Stec(target, "left", left_Disc);
@@ -43,24 +43,24 @@ function check_Barbell() {
         Message.innerHTML = "Select the disk to add"
     }
 }
-right_Disc.addEventListener("click", function (event) {
-    let target = event.target;
-    if (target.parentElement.className !== 'w3-col s6 w3-center w3-border') return;
+right_Disc.addEventListener("contextmenu", function (event) {
+    var target = event.target;
+    if (target.parentElement.className !== 'w3-col s6 w3-center') return;
     sum_Right -= parseInt(target.innerHTML);
     add_Array_Location(target.innerHTML);
     right_Disc.children[target.id].remove();
     check_Barbell();
 });
 left_Disc.addEventListener("click", function (event) {
-    let target = event.target;
-    if (target.parentElement.className !== 'w3-col s6 w3-center w3-border') return;
+    var target = event.target;
+    if (target.parentElement.className !== 'w3-col s6 w3-center') return;
     sum_Left -= parseInt(target.innerHTML);
     add_Array_Location(target.innerHTML);
     left_Disc.children[target.id].remove();
     check_Barbell();
 });
 function add_To_Stec(target, location, locArray) {
-    let child = document.createElement('span');
+    var child = document.createElement('span');
     child.innerHTML = target.innerHTML;
     child.classList.add('w3-badge');
     child.id = location + '_disc_' + Date.now();
