@@ -2,28 +2,22 @@ package com.learnJava;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 public class discSelection {
     /**
      * Varibals
      */
-    private ArrayList<Integer> mainArray = new ArrayList<>();
-    private int sumright = 0;
-    private int sumleft = 0;
-    private int sumfinal = 0;
-    private int sumArray = 0;
-    private int sumDuplicate = 0;
-    private int halfSumArray = 0;
+    private static int sumfinal;
+    private static boolean result;
     /**
      * Check input data for compliance with the condition
      */
-    private void dataInputCheck(int[] array) {
+    private void dataInputCheck(List<Integer> array) {
         boolean check = false;
-        sumArray = Arrays.stream(array).sum();
-        if (sumArray <= 10000) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] > 20 || array[i] < 0) {
+        if (array.stream().mapToInt(Integer::intValue).sum() <= 10000) {
+            for (int i = 0; i < array.size(); i++) {
+                if (array.get(i) > 20 || array.get(i) < 0) {
                     check = true;
                 }
             }
@@ -37,83 +31,69 @@ public class discSelection {
         }
     }
     /**
-     * Checks the possibility of a simple solution
+     *Find Stecks
      * */
-    private boolean checkSimpleSolution(int[] array) {
-        if (array.length <= 2){
-            if(array[0] == array[1]){
-                sumfinal = array[0] + array[1];
-            }
-            return true;
-        } return false;
-    }
-    /**
-     * Simplifies the array
-     * */
-    private void duplicateInStack(int[] array){
-        Arrays.sort(array);
-        for (int i = 0; i < array.length;){
-            if (i == array.length - 1) {
-                mainArray.add(array[i]);
-                break;
-            }
-            if (array[i] == array[i+1]){
-                sumDuplicate += array[i]*2;
-                i += 2;
-            } else {
-                mainArray.add(array[i++]);
-            }
+    static boolean findStecks (List<Integer> arr, int n) {
+        sumfinal = 0;
+        for (int i = 0; i < n; i++) {
+            sumfinal += arr.get(i);
         }
-    }
-    /**
-     * The calculation of the maximum possible sum of subsets
-     * */
-    private int calculateSumInStack(int sumArray, ArrayList<Integer> arrayList) {
-        Collections.reverse(arrayList);
-        halfSumArray = this.sumArray / 2;
-        int x;
-        for (int i = 0; i< arrayList.size(); i++) {
-            if (Math.abs(sumleft + arrayList.get(i)) == halfSumArray ||
-                    Math.abs(sumleft + arrayList.get(i) - sumright) <= Math.abs(sumright + arrayList.get(i) - sumleft)) {
-                if (sumleft == halfSumArray) {
-                    break;
-                }
-                sumleft += arrayList.get(i);
-            } else {
-                sumright += arrayList.get(i);
-            }
+        if (sumfinal%2 != 0){
+            return false;
         }
-        if (sumleft == sumright || sumleft == sumright + sumArray) {
-            if (sumArray == 0) {
-                x = sumleft + sumright;
-            } else {
-                x = sumleft + sumright + sumArray;
-            }
-        } else {
-            x = sumArray;
-            for (int i = 0; i < arrayList.size(); i++) {
-                for (int j = 1; j < arrayList.size(); j++) {
-                    if (x == arrayList.get(i) + arrayList.get(j)) {
-                        x += arrayList.get(i) + arrayList.get(j);
-                        break;
-                    }
+        boolean part[][]=new boolean[sumfinal/2+1][n+1];
+
+        for (int i = 0; i <= n; i++) {
+            part[0][i] = true;
+        }
+        for (int i = 1; i <= sumfinal/2; i++) {
+            part[i][0] = false;
+        }
+        for (int i = 1; i <= sumfinal/2; i++) {
+            for (int j = 1; j <= n; j++){
+                part[i][j] = part[i][j-1];
+                if (i >= arr.get(j-1)){
+                    part[i][j] = part[i][j] || part[i - arr.get(j-1)][j-1];
                 }
             }
         }
-        return x;
+        return part[sumfinal/2][n];
     }
     /**
      *Program steps
-     * */
-    public int steps(int[] array){
-        dataInputCheck(array);
-        if (checkSimpleSolution(array) == true){
-            return sumfinal;
-        } else {
-            duplicateInStack(array);
-            sumfinal = calculateSumInStack(sumDuplicate, mainArray);
+     **/
+    public void steps(Integer[] array){
+        List<Integer> arrayList = new ArrayList<>();
+        List<Integer> tempArray = new ArrayList<>();
+        arrayList.addAll(Arrays.asList(array));
+        dataInputCheck(arrayList);
+        arrayList.sort(Integer::compareTo);
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (!findStecks(arrayList, arrayList.size())) {
+                tempArray.add(arrayList.get(i));
+                arrayList.remove(i);
+                if (!findStecks(arrayList, arrayList.size())) {
+                    arrayList.add(tempArray.get(i));
+                    if (i+1 < arrayList.size()){
+                        tempArray.add(arrayList.get(i + 1));
+                        arrayList.remove(i + 1);
+                        if (findStecks(tempArray, tempArray.size())){
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                result = true;
+                break;
+            }
         }
-        return sumfinal;
+        if (result || findStecks(arrayList, arrayList.size()) || findStecks(tempArray, tempArray.size())){
+            System.out.println(sumfinal);
+        } else {
+            sumfinal = 0;
+            System.out.println(sumfinal);
+        }
     }
 }
 
