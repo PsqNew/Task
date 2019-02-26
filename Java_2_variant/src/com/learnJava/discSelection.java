@@ -68,24 +68,29 @@ public class discSelection {
         arrayList.addAll(Arrays.asList(array));
         dataInputCheck(arrayList);
         arrayList.sort(Integer::compareTo);
-        for (int i = 0; i < arrayList.size(); i++) {
-            if (!findStecks(arrayList, arrayList.size())) {
-                tempArray.add(arrayList.get(i));
-                arrayList.remove(i);
+        if (arrayList.size() == 2){
+            findStecks(arrayList,arrayList.size());
+        } else {
+            for (int i = 0; i < arrayList.size(); i++) {
+                arrayList.sort(Integer::compareTo);
                 if (!findStecks(arrayList, arrayList.size())) {
-                    arrayList.add(tempArray.get(i));
-                    if (i+1 < arrayList.size()){
-                        tempArray.add(arrayList.get(i + 1));
-                        arrayList.remove(i + 1);
-                        if (findStecks(tempArray, tempArray.size())){
-                            result = true;
-                            break;
+                    tempArray.add(arrayList.get(i));
+                    arrayList.remove(i);
+                    if (!findStecks(arrayList, arrayList.size())) {
+                        arrayList.add(tempArray.get(i));
+                        if (i+1 < arrayList.size()){
+                            tempArray.add(arrayList.get(i + 1));
+                            arrayList.remove(i + 1);
+                            if (findStecks(tempArray, tempArray.size())){
+                                result = true;
+                                break;
+                            }
                         }
                     }
+                } else {
+                    result = true;
+                    break;
                 }
-            } else {
-                result = true;
-                break;
             }
         }
         if (result || findStecks(arrayList, arrayList.size()) || findStecks(tempArray, tempArray.size())){
