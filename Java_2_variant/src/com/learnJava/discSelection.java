@@ -8,6 +8,7 @@ public class discSelection {
     /**
      * Varibals
      */
+    private static List<Integer> mainArray = new ArrayList<>();
     private static int sumfinal;
     private static boolean result;
     /**
@@ -78,14 +79,9 @@ public class discSelection {
                     arrayList.remove(i);
                     if (!findStecks(arrayList, arrayList.size())) {
                         arrayList.add(tempArray.get(i));
-                        if (i+1 < arrayList.size()){
-                            tempArray.add(arrayList.get(i + 1));
-                            arrayList.remove(i + 1);
                             if (findStecks(tempArray, tempArray.size())){
                                 result = true;
-                                break;
                             }
-                        }
                     }
                 } else {
                     result = true;
